@@ -17,10 +17,10 @@ export const sendSMS = async (phone, message) => {
       }
     );
 
-    console.log(`✅ SMS sent to ${phone}:`, response.data);
+    console.log(`SMS sent to ${phone}:`, response.data);
     return true;
   } catch (error) {
-    console.error(`❌ Failed to send SMS to ${phone}:`, error.response?.data || error.message);
+    console.error(`Failed to send SMS to ${phone}:`, error.response?.data || error.message);
     return false;
   }
 };

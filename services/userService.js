@@ -52,22 +52,6 @@ export const activateUserById = async (id) => {
   return user;
 };
 
-export const loginUserService = async ({ email, password }) => {
-  const user = await UserModel.findOne({ email });
-  if (!user) throw new Error("User not found");
-
-  const isMatch = await comparePassword(password, user.password);
-  if (!isMatch) throw new Error("Invalid credentials");
-  const token = generateToken({
-    id: user._id,
-    role: user.role,
-    email: user.email,
-    permissions: user.customPermissions || []
-  });
-
-  return { user, token };
-};
-
 export const fetchUsersService = async (limit = 10, cursor = null) => {
   const query = { role: 'user' };
   if (cursor) query._id = { $gt: cursor };
