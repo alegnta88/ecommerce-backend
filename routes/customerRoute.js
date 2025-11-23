@@ -16,6 +16,7 @@ import {
 } from '../controllers/customerController.js';
 import adminAuth from '../middleware/adminAuth.js';
 import customerAuth from '../middleware/customerAuth.js';
+import adminOrUserAuth from '../middleware/adminOrUserAuth.js';
 
 const loginLimiter = rateLimit({
   windowMs: 2 * 60 * 1000, 
@@ -41,7 +42,7 @@ customerRouter.post('/2fa/verify', customerAuth, verifyEnable2FA);
 
 customerRouter.post('/2fa/disable', customerAuth, disable2FA);          
 
-customerRouter.get('/', adminAuth, getAllCustomers);
+customerRouter.get('/', adminOrUserAuth, getAllCustomers);
 customerRouter.put('/:id/deactivate', adminAuth, deactivateCustomer);
 customerRouter.put('/:id/activate', adminAuth, activateCustomer);
 
