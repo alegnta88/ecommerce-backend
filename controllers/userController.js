@@ -22,6 +22,7 @@ export const registerUserByAdmin = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
+    
     const limit = parseInt(req.query.limit) || 10;
     const cursor = req.query.cursor;
 
