@@ -4,7 +4,6 @@ import {
   deactivateUserById,
   fetchUsersService
 } from '../services/userService.js';
-import UserModel from '../models/userModel.js';
 import { handleLogin } from '../services/authService.js';
 
 export const registerUserByAdmin = async (req, res) => {
