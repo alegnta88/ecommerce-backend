@@ -22,6 +22,8 @@ export const registerCustomerService = async ({ name, email, phone, password }) 
     twoFactorEnabled: false,
   });
 
+  console.log('Registering customer with:', name, email, phone, hashedPassword);
+
   await customer.save();
 
   await redisClient.setEx(`otp:registration:${customer._id}`, 300, otp);

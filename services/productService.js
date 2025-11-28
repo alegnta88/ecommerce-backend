@@ -5,24 +5,19 @@ import mongoose from 'mongoose';
 
 export const createProduct = async (data, files, user) => {
   const { name, price, description, category, subcategory, sizes, bestseller, stock } = data;
-
   if (!name || !price || !description || !category || !stock) {
     throw new Error("Please provide all required fields.");
   }
-
   if (isNaN(price) || price <= 0) {
     throw new Error("Invalid product price.");
   }
-
   if (stock != null && (isNaN(stock) || stock < 0)) {
     throw new Error("Stock must be a non-negative number");
   }
-
   const categoryDoc = await CategoryModel.findById(category).catch(() => null);
   if (!categoryDoc) {
     throw new Error("The selected category does not exist. Please choose a valid category.");
   }
-
   const imageArray = [];
   if (files?.length > 0) {
     for (const file of files) {
@@ -30,11 +25,9 @@ export const createProduct = async (data, files, user) => {
       imageArray.push(url);
     }
   }
-
   if (imageArray.length === 0) {
     throw new Error("At least one product image is required.");
   }
-
   let parsedSizes = [];
   if (sizes) {
     try {
