@@ -14,7 +14,6 @@ import cartRouter from './routes/cartRoute.js';
 import categoryRouter from './routes/categoryRoute.js';
 import adminRouter from './routes/adminRoute.js';
 import cookieparser from 'cookie-parser';
-import session from 'express-session';
 
 dotenv.config();
 
