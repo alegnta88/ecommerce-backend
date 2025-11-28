@@ -13,6 +13,8 @@ import customerRouter from './routes/customerRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import categoryRouter from './routes/categoryRoute.js';
 import adminRouter from './routes/adminRoute.js';
+import cookieparser from 'cookie-parser';
+import session from 'express-session';
 
 dotenv.config();
 
@@ -24,6 +26,7 @@ connectToDatabase();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
+app.use(cookieparser());
 
 app.use('/api/v1/stripe', stripeRouter);
 app.use('/api/v1/users', userRouter);
