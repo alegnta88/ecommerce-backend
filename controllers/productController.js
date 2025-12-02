@@ -7,6 +7,7 @@ import {
   rejectProductById 
 } from '../services/productService.js';
 import logger from "../utils/logger.js";
+import asyncHandler from 'express-async-handler';
 
 export const addProduct = async (req, res) => {
   try {
@@ -34,16 +35,12 @@ export const addProduct = async (req, res) => {
   }
 };
 
-export const listProduct = async (req, res) => {
-  try {
-    const user = req.user;
-    const data = await getProducts(req.query, user);
-    res.status(200).json({ success: true, ...data });
-  } catch (error) {
-    logger.error("Error listing products: %o", error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+export const listProduct = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const data = await getProducts(req.query, user);
+
+  res.status(200).json({ success: true, ...data });
+});
 
 export const removeProduct = async (req, res) => {
   try {
