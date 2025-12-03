@@ -4,10 +4,11 @@ import {
   deleteProduct, 
   getProductById, 
   approveProductById, 
-  rejectProductById 
+  rejectProductById,
+  updateStockById
 } from '../services/productService.js';
-import logger from "../utils/logger.js";
-import asyncHandler from 'express-async-handler';
+
+import asyncHandler from "express-async-handler";
 
 export const addProduct = asyncHandler(async (req, res) => {
   const user = req.user;
@@ -32,7 +33,6 @@ export const addProduct = asyncHandler(async (req, res) => {
     product,
   });
 });
-
 
 export const listProduct = asyncHandler(async (req, res) => {
   const user = req.user;
@@ -61,8 +61,6 @@ export const singleProduct = asyncHandler(async (req, res) => {
   });
 });
 
-import asyncHandler from "express-async-handler";
-
 export const approveProduct = asyncHandler(async (req, res) => {
   const product = await approveProductById(req.params.id);
 
@@ -82,8 +80,6 @@ export const rejectProduct = asyncHandler(async (req, res) => {
     product,
   });
 });
-
-import asyncHandler from "express-async-handler";
 
 export const updateStock = asyncHandler(async (req, res) => {
   const { id } = req.params;
