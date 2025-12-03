@@ -83,8 +83,6 @@ export const rejectProduct = asyncHandler(async (req, res) => {
   });
 });
 
-import asyncHandler from "express-async-handler";
-
 export const updateStock = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { stock } = req.body;
