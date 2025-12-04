@@ -101,12 +101,20 @@ export const deleteProduct = async (id) => {
   return true;
 };
 
-export const getProductById = async (id) => {
+export const getProductById = async (id, user) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new Error('Invalid product ID');
   }
-  const product = await ProductModel.findById(id);
-  if (!product) throw new Error('Product not found');
+
+  const filter = { _id: id };
+  if (!user || user.role !== "admin") {
+    filter.status = "approved";
+  }
+
+  const product = await ProductModel.findOne(filter);
+
+  if (!product) throw new Error('Product not found or not accessible');
+
   return product;
 };
 
