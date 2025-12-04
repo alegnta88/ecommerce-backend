@@ -52,8 +52,11 @@ export const removeProduct = asyncHandler(async (req, res) => {
 });
 
 export const singleProduct = asyncHandler(async (req, res) => {
+  const user = req.user;
+  console.log(req.user);
   const { id } = req.params;
-  const product = await getProductById(id);
+
+  const product = await getProductById(id, user);
 
   res.status(200).json({
     success: true,

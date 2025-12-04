@@ -29,8 +29,6 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 app.use(cookieparser());
-app.use(notFound);
-app.use(errorHandler);
 
 app.use('/api/v1/stripe', stripeRouter);
 app.use('/api/v1/users', userRouter);
@@ -45,6 +43,9 @@ app.use('/api/v1/admins', adminRouter);
 app.get('/', (req, res) => {
   res.status(200).send('App is running');
 });
+
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

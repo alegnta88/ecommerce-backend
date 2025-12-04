@@ -22,7 +22,7 @@ productRouter.get('/', optionalAuth, listProduct);
 productRouter.get('/:id', optionalAuth, singleProduct);
 
 productRouter.delete('/:id', adminOrUserAuth, removeProduct);
-productRouter.put('/:id/stock', adminAuth, updateStock);
+productRouter.put('/:id/stock', adminOrUserAuth, updateStock);
 
 productRouter.put('/:id/approve', adminAuth, approveProduct);
 productRouter.put('/:id/reject', adminAuth, rejectProduct);
