@@ -14,6 +14,9 @@ import cartRouter from './routes/cartRoute.js';
 import categoryRouter from './routes/categoryRoute.js';
 import adminRouter from './routes/adminRoute.js';
 import cookieparser from 'cookie-parser';
+import asyncHandler from 'express-async-handler';
+import { notFound } from './middleware/notFound.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -26,6 +29,8 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 app.use(cookieparser());
+app.use(notFound);
+app.use(errorHandler);
 
 app.use('/api/v1/stripe', stripeRouter);
 app.use('/api/v1/users', userRouter);
