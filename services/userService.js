@@ -44,7 +44,7 @@ export const deactivateUserById = async (id) => {
 export const activateUserById = async (id) => {
   const user = await UserModel.findById(id);
   if (!user) throw new Error('User not found');
-  if (user.isActive = 'true') throw new Error ('This account is already Activated!')
+  if (user.isActive = 'true') throw new Error ('This account is already Active!')
   if (user.role !== 'user') throw new Error('Cannot activate non-user account');
 
   user.isActive = true;
