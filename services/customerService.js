@@ -43,6 +43,7 @@ export const verifyCustomerOTPService = async ({ email, otp }) => {
   if (customer.isVerified) throw new Error('Customer already verified');
 
   const storedOtp = await redisClient.get(`otp:registration:${customer._id}`);
+
   if (!storedOtp) throw new Error('OTP expired or not found');
   if (storedOtp !== otp) throw new Error('Invalid OTP');
 
