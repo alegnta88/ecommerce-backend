@@ -15,8 +15,7 @@ spec:
       terminationGracePeriodSeconds: 6
       containers:
         - name: ecom-app
-          image: ecom-app:latest
-          imagePullPolicy: Never
+          image: alegnta/ecom-app:latest
           ports:
             - containerPort: 5000
           envFrom:

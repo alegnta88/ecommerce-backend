@@ -9,3 +9,4 @@ logs/
 secrets.yaml
 */secrets.yaml
 kubernetes-config/secret.yaml
+kubernetes-config/configmap.yaml
