@@ -21,5 +21,3 @@ spec:
           envFrom:
             - configMapRef:
                 name: ecom-config
-            - secretRef:
-                name: ecom-secret
