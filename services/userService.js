@@ -33,8 +33,8 @@ export const registerUserService = async ({ name, email, phone, password }, isAd
 export const deactivateUserById = async (id) => {
   const user = await UserModel.findById(id);
   if (!user) throw new Error('User not found');
-  if (user.isActive = 'false' ) throw new Error('This account is already deactive');
   if (user.role !== 'user') throw new Error('Cannot deactivate non-user account');
+  if (!user.isActive) throw new Error('This account is already deactive');
 
   user.isActive = false;
   await user.save();
@@ -44,8 +44,8 @@ export const deactivateUserById = async (id) => {
 export const activateUserById = async (id) => {
   const user = await UserModel.findById(id);
   if (!user) throw new Error('User not found');
-  if (user.isActive = 'true') throw new Error ('This account is already Active!')
   if (user.role !== 'user') throw new Error('Cannot activate non-user account');
+  if (user.isActive) throw new Error('This account is already Active!');
 
   user.isActive = true;
   await user.save();
