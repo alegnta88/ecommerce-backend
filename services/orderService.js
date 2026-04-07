@@ -10,43 +10,62 @@ export const createOrderService = async (customer, items, shippingAddress) => {
   const orderItems = [];
   let totalAmount = 0;
 
-  for (const item of items) {
-    if (!mongoose.Types.ObjectId.isValid(item.product)) {
-      throw new Error(`Invalid product ID ${item.product}`);
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    for (const item of items) {
+      if (!mongoose.Types.ObjectId.isValid(item.product)) {
+        throw new Error(`Invalid product ID ${item.product}`);
+      }
+
+      const quantity = item.quantity || 1;
+
+      // Atomic find and decrement using session
+      const product = await ProductModel.findOneAndUpdate(
+        { _id: item.product, stock: { $gte: quantity } },
+        { $inc: { stock: -quantity } },
+        { new: true, session }
+      );
+
+      if (!product) {
+        // Fallback check to provide a descriptive error message
+        const existingProduct = await ProductModel.findById(item.product).session(session);
+        if (!existingProduct) {
+          throw new Error(`Product not found: ${item.product}`);
+        } else {
+          throw new Error(`Insufficient stock for ${existingProduct.name}. Available: ${existingProduct.stock}`);
+        }
+      }
+
+      totalAmount += product.price * quantity;
+
+      orderItems.push({
+        product: product._id,
+        quantity,
+        price: product.price,
+      });
     }
 
-    const product = await ProductModel.findById(item.product);
-    if (!product) throw new Error(`Product not found: ${item.product}`);
-
-    const quantity = item.quantity || 1;
-
-    if (product.stock < quantity) {
-      throw new Error(`Insufficient stock for ${product.name}. Available: ${product.stock}`);
-    }
-    
-    product.stock -= quantity;
-    await product.save();
-
-    totalAmount += product.price * quantity;
-
-    orderItems.push({
-      product: product._id,
-      quantity,
-      price: product.price,
+    const order = new OrderModel({
+      customer: customer._id,
+      items: orderItems,
+      totalAmount,
+      shippingAddress,
+      paymentStatus: "pending",
+      orderStatus: "pending",
     });
+
+    await order.save({ session });
+    
+    await session.commitTransaction();
+    session.endSession();
+    return order;
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
   }
-
-  const order = new OrderModel({
-    customer: customer._id,
-    items: orderItems,
-    totalAmount,
-    shippingAddress,
-    paymentStatus: "pending",
-    orderStatus: "pending",
-  });
-
-  await order.save();
-  return order;
 };
 
 // let customer view their orders
@@ -73,9 +92,9 @@ export const updateOrderStatusService = async (user, orderId, newStatus) => {
   }
 
   const allowedTransitions = {
-    pending: ['processing'],
-    processing: ['shipped'],
-    shipped: [],
+    pending: ['processing', 'cancelled'],
+    processing: ['shipped', 'cancelled'],
+    shipped: ['delivered'],
     delivered: [],
     cancelled: [],
   };
@@ -85,10 +104,8 @@ export const updateOrderStatusService = async (user, orderId, newStatus) => {
     throw new Error(`Invalid status: ${newStatus}`);
   }
 
-  if (user.role !== 'admin') {
-    if (!allowedTransitions[order.orderStatus].includes(newStatus)) {
-      throw new Error(`You cannot change status from ${order.orderStatus} to ${newStatus}`);
-    }
+  if (!allowedTransitions[order.orderStatus].includes(newStatus)) {
+    throw new Error(`You cannot change status from ${order.orderStatus} to ${newStatus}`);
   }
 
   order.orderStatus = newStatus;
